@@ -59,6 +59,22 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     const setPulseNameCommand = vscode.commands.registerCommand('dglabvscode.setPulseName', function() {
+        const inputBoxOptions: vscode.InputBoxOptions = {
+            prompt: '请输入波形名称',
+            placeHolder: '波形名称',
+            value: wsClient.getPulseName()
+            
+        };
+        vscode.window.showInputBox(inputBoxOptions).then(async (pulseName) => {
+            if (pulseName) {
+                const success = await wsClient.setPulseName(pulseName);
+                if (success) {
+                    logger.info(`成功设置波形为 ${pulseName}`);
+                } else {
+                    logger.error(`设置波形为 ${pulseName} 失败`);
+                }
+            }
+        });
         applySettings();
     });
     
@@ -160,3 +176,11 @@ const wsClient = new WSClient(vscode);
 
 // Clean up when extension is deactivated
 export function deactivate() {}
+
+/*
+
+
+
+
+
+ */

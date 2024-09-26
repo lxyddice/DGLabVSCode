@@ -89,6 +89,7 @@ export class WSClient {
                 resolve(this.clientId);
                 this.startHeartbeat();
                 this.updateConnectMap(message);
+                this.vscode.window.showInformationMessage(`成功连接到ClientId:${message.clientId}，targetId:${message.targetId}`);
             }
             logger.info('收到消息:', message);
         } catch (error) {

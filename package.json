@@ -22,6 +22,10 @@
       {
         "command": "dglabvscode.serR",
         "title": "DGLabVSCode: 刷新配置"
+      },
+      {
+        "command": "dglabvscode.setPulseName",
+        "title": "DGLabVSCode: 设置波形名称"
       }
     ],
     "configuration": {
