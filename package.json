@@ -1,0 +1,110 @@
+{
+  "name": "dglabvscode",
+  "displayName": "DGLabVSCode",
+  "description": "郊狼VSCode插件",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.create",
+        "title": "开始连接",
+        "category": "DGLabVSCode"
+      },
+      {
+        "command": "extension.serR",
+        "title": "刷新配置",
+        "category": "DGLabVSCode"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Extension Settings",
+      "properties": {
+        "extension.strength": {
+          "type": "number",
+          "default": 5,
+          "description": "基础强度"
+        },
+        "extension.pulseName": {
+          "type": "string",
+          "default": "呼吸",
+          "description": "波形名称"
+        },
+        "extension.heartbeatInterval": {
+          "type": "number",
+          "default": 30,
+          "description": "心跳间隔与强度渐增间隔"
+        },
+        "extension.maxAddInterval": {
+          "type": "number",
+          "default": 20,
+          "description": "最大强度渐增"
+        },
+        "extension.onDidStartDebugSession": {
+          "type": "number",
+          "default": 15,
+          "description": "开始调试时一键开火"
+        },
+        "extension.onDidTerminateDebugSession": {
+          "type": "number",
+          "default": 15,
+          "description": "结束调试时一键开火"
+        },
+        "extension.onDidReceiveDebugSessionCustomEvent": {
+          "type": "number",
+          "default": 20,
+          "description": "报错惩罚喵"
+        },
+        "extension.onDidChangeBreakpoints": {
+          "type": "number",
+          "default": 10,
+          "description": "断点变化一键开火"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "extension.create",
+        "key": "ctrl+u",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/log4js": "^2.3.5",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@types/qrcode": "^1.5.5",
+    "@types/uuid": "^10.0.0",
+    "@types/vscode": "^1.93.0",
+    "@types/websocket": "^1.0.10",
+    "@types/ws": "^8.5.12",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.9.1",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "uuid": "^10.0.0",
+    "ws": "^8.18.0"
+  }
+}
