@@ -2,6 +2,7 @@
   "name": "dglabvscode",
   "displayName": "DGLabVSCode",
   "description": "郊狼VSCode插件",
+  "publisher": "lxyddice",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.93.0"
@@ -14,46 +15,44 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.create",
-        "title": "开始连接",
-        "category": "DGLabVSCode"
+        "command": "dglabvscode.create",
+        "title": "DGLabVSCode: 开始连接"
       },
       {
-        "command": "extension.serR",
-        "title": "刷新配置",
-        "category": "DGLabVSCode"
+        "command": "dglabvscode.serR",
+        "title": "DGLabVSCode: 刷新配置"
       }
     ],
     "configuration": {
       "type": "object",
-      "title": "Extension Settings",
+      "title": "郊狼VSCode插件配置",
       "properties": {
-        "extension.strength": {
+        "dglabvscode.strength": {
           "type": "number",
           "default": 5,
           "description": "基础强度"
         },
-        "extension.pulseName": {
+        "dglabvscode.pulseName": {
           "type": "string",
           "default": "呼吸",
           "description": "波形名称"
         },
-        "extension.heartbeatInterval": {
+        "dglabvscode.heartbeatInterval": {
           "type": "number",
           "default": 30,
           "description": "心跳间隔与强度渐增间隔"
         },
-        "extension.maxAddInterval": {
+        "dglabvscode.maxAddInterval": {
           "type": "number",
           "default": 20,
           "description": "最大强度渐增"
         },
-        "extension.onDidStartDebugSession": {
+        "dglabvscode.onDidStartDebugSession": {
           "type": "number",
           "default": 15,
           "description": "开始调试时一键开火"
         },
-        "extension.onDidTerminateDebugSession": {
+        "dglabvscode.onDidTerminateDebugSession": {
           "type": "number",
           "default": 15,
           "description": "结束调试时一键开火"
@@ -63,7 +62,7 @@
           "default": 20,
           "description": "报错惩罚喵"
         },
-        "extension.onDidChangeBreakpoints": {
+        "dglabvscode.onDidChangeBreakpoints": {
           "type": "number",
           "default": 10,
           "description": "断点变化一键开火"
@@ -72,7 +71,7 @@
     },
     "keybindings": [
       {
-        "command": "extension.create",
+        "command": "dglabvscode.create",
         "key": "ctrl+u",
         "when": "editorTextFocus"
       }
@@ -103,6 +102,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "log4js": "^6.9.1",
     "qrcode": "^1.5.4",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"

@@ -26,7 +26,7 @@ export class WSClient {
     }
 
     public getConfig() {
-        const config = this.vscode.workspace.getConfiguration('extension');
+        const config = this.vscode.workspace.getConfiguration('dglabvscode');
         if (!config || !config.has('strength') || !config.has('pulseName') || !config.has('heartbeatInterval')) {
             logger.error("获取配置失败");
             return null;
@@ -48,7 +48,7 @@ export class WSClient {
 
     public async loadPulseData() {
         try {
-            const filePath = path.join(__dirname, '../../src/asset/wave.json');
+            const filePath = path.join(__dirname, "../../wave.json");
             const data = await fs.readFile(filePath, 'utf-8');
             this.pulseData = JSON.parse(data);
             logger.info("加载波形数据成功");

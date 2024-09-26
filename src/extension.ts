@@ -27,7 +27,10 @@ function applySettings () {
 };
 
 export function activate(context: vscode.ExtensionContext) {
-    const createCommand = vscode.commands.registerCommand('extension.create', async () => {
+    const outputChannel = vscode.window.createOutputChannel('DGLabVSCode');
+
+    outputChannel.appendLine('开始连接 WebSocket...');
+    const createCommand = vscode.commands.registerCommand('dglabvscode.create', async function() {
         try {
             const clientId = await wsClient.connect();
             const url = `https://www.dungeon-lab.com/app-download.php#DGLAB-SOCKET#wss://ws.dungeon-lab.cn/${clientId}`;
@@ -44,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    const serR = vscode.commands.registerCommand('extension.serR', () => {
+    const serR = vscode.commands.registerCommand('dglabvscode.serR', function () {
         const connectMap = wsClient.getConnectMap();
         if (connectMap.size === 0) {
             vscode.window.showErrorMessage('还没有创建连接喵');
@@ -55,12 +58,14 @@ export function activate(context: vscode.ExtensionContext) {
         applySettings();
     });
 
-    const setPulseNameCommand = vscode.commands.registerCommand('extension.setPulseName', () => {
+    const setPulseNameCommand = vscode.commands.registerCommand('dglabvscode.setPulseName', function() {
         applySettings();
     });
+    
+    context.subscriptions.push(createCommand, setPulseNameCommand, serR);
 
     // 监听文本变化
-    const disposable = vscode.workspace.onDidChangeTextDocument((event) => {
+    vscode.workspace.onDidChangeTextDocument((event) => {
         const editor = vscode.window.activeTextEditor;
         
         if (editor && event.document === editor.document) {
@@ -126,7 +131,6 @@ export function activate(context: vscode.ExtensionContext) {
         wsClient.sendFireMessage("this", config.onDidChangeBreakpoints, 0.6);
     });
 
-    context.subscriptions.push(createCommand, setPulseNameCommand, serR, disposable);
 }
 
 function getWebviewContent(qrCodeSvg: string, url: string): string {
