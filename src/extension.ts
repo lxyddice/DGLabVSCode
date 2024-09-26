@@ -179,8 +179,8 @@ export function deactivate() {}
 
 /*
 
+调试会话开始时触发 onDidStartDebugSession
 
-
-
+想象一下边写边电（？
 
  */
