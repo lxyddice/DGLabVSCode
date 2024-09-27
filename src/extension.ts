@@ -6,7 +6,7 @@ import log4js from 'log4js';
 const logger = log4js.getLogger('WSClient');
 logger.level = 'debug';
 
-function applySettings () {
+async function applySettings () {
     const config = wsClient.getConfig();
     if (!config) {
         logger.error('No config found');
@@ -22,7 +22,12 @@ function applySettings () {
     }
 
     if (pulseName) {
-        wsClient.setPulseName(pulseName);
+        const success = wsClient.setPulseName(pulseName);
+        if (await success) {
+            vscode.window.showInformationMessage(`设置波形为 ${pulseName} 成功`);
+        } else {
+            vscode.window.showErrorMessage(`设置波形为 ${pulseName} 失败`);
+        }
     }
 };
 

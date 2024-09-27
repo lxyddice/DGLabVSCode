@@ -3,7 +3,7 @@
   "displayName": "DGLabVSCode",
   "description": "郊狼VSCode插件",
   "publisher": "lxyddice",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -71,6 +71,21 @@
           "type": "number",
           "default": 10,
           "description": "断点变化一键开火"
+        },
+        "dglabvscode.messageSendOption": {
+          "type": "string",
+          "default": "AB一起输出",
+          "enum": [
+            "仅A通道输出",
+            "仅B通道输出",
+            "AB一起输出"
+          ],
+          "enumDescriptions": [
+            "仅A通道输出",
+            "仅B通道输出",
+            "AB一起输出"
+          ],
+          "description": "设置一个输出选项"
         }
       }
     },

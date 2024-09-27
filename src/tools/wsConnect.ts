@@ -34,6 +34,22 @@ export class WSClient {
         if (Number(config.get('heartbeatInterval')) < 10) {
             logger.warn("心跳间隔过短，可能导致快速被电似（");
         }
+        let messageSendOption = config.get('messageSendOption');
+        switch (messageSendOption) {
+            case "仅A通道输出":
+                messageSendOption = "A";
+                break;
+            case "仅B通道输出":
+                messageSendOption = "B";
+                break;
+            case "AB一起输出":
+                messageSendOption = "AB";
+                break;
+            default:
+                messageSendOption = "AB";
+                break;
+        }
+
         return {
             strength: config.get('strength'),
             pulseName: config.get('pulseName'),
@@ -43,6 +59,7 @@ export class WSClient {
             onDidTerminateDebugSession: config.get('onDidTerminateDebugSession') ? config.get('onDidTerminateDebugSession') : "none",
             onDidReceiveDebugSessionCustomEvent: config.get('onDidReceiveDebugSessionCustomEvent') ? config.get('onDidReceiveDebugSessionCustomEvent') : "none",
             onDidChangeBreakpoints: config.get('onDidChangeBreakpoints') ? config.get('onDidChangeBreakpoints') : "none",
+            messageSendOption: messageSendOption,
         };
     }
 
@@ -174,9 +191,21 @@ export class WSClient {
             logger.error("波形数据为空，请先设置波形名称或输入波形数据");
             return;
         }
+        const config = this.getConfig();
+        if (!config) {
+            logger.error("获取配置失败");
+            return;
+        }
+        const messageSendOption = config.messageSendOption;
         for (const [clientId, targetId] of this.connectMap) {
-            this.sendJsonMessage({ type: 'clientMsg', channel: 'A', clientId, targetId, message: 'A:' + JSON.stringify(wave), time });
-            this.sendJsonMessage({ type: 'clientMsg', channel: 'B', clientId, targetId, message: 'B:' + JSON.stringify(wave), time });
+            if (messageSendOption === "A") {
+                this.sendJsonMessage({ type: 'clientMsg', channel: 'A', clientId, targetId, message: 'A:' + JSON.stringify(wave), time });
+            } else if (messageSendOption === "B") {
+                this.sendJsonMessage({ type: 'clientMsg', channel: 'B', clientId, targetId, message: 'B:' + JSON.stringify(wave), time });
+            } else {
+                this.sendJsonMessage({ type: 'clientMsg', channel: 'A', clientId, targetId, message: 'A:' + JSON.stringify(wave), time });
+                this.sendJsonMessage({ type: 'clientMsg', channel: 'B', clientId, targetId, message: 'B:' + JSON.stringify(wave), time });
+            }   
         }
     }
 
@@ -256,6 +285,7 @@ export class WSClient {
         if (!this.pulseData["PULSE_DATA"]) {
             logger.warn("波形数据未加载，正在重新加载...");
             await this.loadPulseData();
+            return true;
         }
 
         if (this.pulseData["PULSE_DATA"][pulseName]) {
