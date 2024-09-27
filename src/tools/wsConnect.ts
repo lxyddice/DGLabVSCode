@@ -18,7 +18,13 @@ export class WSClient {
 
     constructor(vscode: any) {
         this.vscode = vscode;
-        this.setPulseName("呼吸");
+        const config = this.getConfig();
+        if (config) {
+            this.pulseName = config.pulseName;
+            this.loadPulseData();
+        } else {
+            logger.error("获取配置失败");
+        }
     }
 
     public setaddStrengthInterval(interval: number) {
