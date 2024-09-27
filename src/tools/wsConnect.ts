@@ -60,6 +60,8 @@ export class WSClient {
             onDidReceiveDebugSessionCustomEvent: config.get('onDidReceiveDebugSessionCustomEvent') ? config.get('onDidReceiveDebugSessionCustomEvent') : "none",
             onDidChangeBreakpoints: config.get('onDidChangeBreakpoints') ? config.get('onDidChangeBreakpoints') : "none",
             messageSendOption: messageSendOption,
+            condingMaxfFrequency: config.get('condingMaxfFrequency') ? Number(config.get('condingMaxfFrequency')) : 20,
+            onDidSaveTextDocument: config.get('onDidSaveTextDocument') ? config.get('onDidSaveTextDocument') : 12,
         };
     }
 
@@ -106,11 +108,9 @@ export class WSClient {
                 resolve(this.clientId);
                 this.startHeartbeat();
                 this.updateConnectMap(message);
-                this.vscode.window.showInformationMessage(`成功连接到ClientId:${message.clientId}，targetId:${message.targetId}`);
             }
             logger.info('收到消息:', message);
         } catch (error) {
-            logger.error('处理消息失败:', error);
             logger.info('收到消息:', data.toString());
         }
     }
@@ -125,6 +125,8 @@ export class WSClient {
             } else {
                 logger.error("未设置基础强度");
             }
+            
+            this.vscode.window.showInformationMessage(`成功连接到ClientId:${message.clientId}，targetId:${message.targetId}`);
         }
     }
 

@@ -72,6 +72,16 @@
           "default": 10,
           "description": "断点变化一键开火"
         },
+        "dglabvscode.onDidSaveTextDocument": {
+          "type": "number",
+          "default": 12,
+          "description": "保存文件一键开火"
+        },
+        "dglabvscode.condingMaxfFrequency": {
+          "type": "number",
+          "default": 20,
+          "description": "编辑代码时超过一定频率清空输出队列防止手快打代码多了被电114年（喵？ 单位为事件数/20秒）"
+        },
         "dglabvscode.messageSendOption": {
           "type": "string",
           "default": "AB一起输出",

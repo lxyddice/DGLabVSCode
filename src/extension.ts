@@ -23,6 +23,7 @@ async function applySettings () {
 
     if (pulseName) {
         const success = wsClient.setPulseName(pulseName);
+        wsClient.clearAllWave();
         if (await success) {
             vscode.window.showInformationMessage(`设置波形为 ${pulseName} 成功`);
         } else {
@@ -84,16 +85,29 @@ export function activate(context: vscode.ExtensionContext) {
     });
     
     context.subscriptions.push(createCommand, setPulseNameCommand, serR);
+    let lastClearChangeTextTime = Date.now();
+    let lastClearChangeTextCount = 0;
 
     // 监听文本变化
     vscode.workspace.onDidChangeTextDocument((event) => {
         const editor = vscode.window.activeTextEditor;
-        
+        const config = wsClient.getConfig();
+        if (!config || config.condingMaxfFrequency === undefined) {
+            logger.error('No config found');
+            return;
+        }
         if (editor && event.document === editor.document) {
             const changes = event.contentChanges;
             
             changes.forEach(change => {
                 if (wsClient.getConnectMap().size > 0) {
+                    const now = Date.now();
+                    if (now - lastClearChangeTextTime < 20000 && lastClearChangeTextCount > config.condingMaxfFrequency) {
+                        wsClient.clearAllWave();
+                        lastClearChangeTextCount = 0;
+                        lastClearChangeTextTime = now;
+                    }
+                    lastClearChangeTextCount++;
                     wsClient.sendWaveMessage("this", 0.3);
                 }
             });
@@ -150,6 +164,16 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
         wsClient.sendFireMessage("this", config.onDidChangeBreakpoints, 0.6);
+    });
+
+    vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
+        const config = wsClient.getConfig();
+        if (!config || config.onDidSaveTextDocument === undefined) {
+            logger.error('No config found');
+            return;
+        }
+        console.log(`File saved: ${document.fileName}`);
+        wsClient.sendFireMessage("this", config.onDidSaveTextDocument, 2);
     });
 
 }
