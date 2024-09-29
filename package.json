@@ -3,7 +3,7 @@
   "displayName": "DGLabVSCode",
   "description": "郊狼VSCode插件",
   "publisher": "lxyddice",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -32,6 +32,14 @@
       "type": "object",
       "title": "郊狼VSCode插件配置",
       "properties": {
+        "dglabvscode.blacklist": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "default": [],
+            "description": "黑名单后缀名列表"
+        },
         "dglabvscode.strength": {
           "type": "number",
           "default": 5,
@@ -39,7 +47,7 @@
         },
         "dglabvscode.pulseName": {
           "type": "string",
-          "default": "呼吸",
+          "default": "快速按捏",
           "description": "波形名称"
         },
         "dglabvscode.heartbeatInterval": {

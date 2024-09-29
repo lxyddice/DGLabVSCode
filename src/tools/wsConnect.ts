@@ -2,6 +2,7 @@ import WebSocket from 'ws';
 import log4js from 'log4js';
 import fs from 'fs/promises';
 import path from 'path';
+import { DocumentDropEdit } from 'vscode';
 
 const logger = log4js.getLogger('WSClient');
 logger.level = 'debug';
@@ -68,7 +69,19 @@ export class WSClient {
             messageSendOption: messageSendOption,
             condingMaxfFrequency: config.get('condingMaxfFrequency') ? Number(config.get('condingMaxfFrequency')) : 20,
             onDidSaveTextDocument: config.get('onDidSaveTextDocument') ? config.get('onDidSaveTextDocument') : 12,
+            blacklist: config.get('blacklist') ? config.get('blacklist') : [],
         };
+    }
+
+    public getFEx() {
+        try {
+            const fEx = this.vscode.document.fileName.split('.').pop();
+            logger.info("获取文件扩展名成功:", fEx);
+            return fEx;
+        } catch (error) {
+            logger.error("获取文件扩展名失败:", error);
+            return ".error";
+        }
     }
 
     public async loadPulseData() {

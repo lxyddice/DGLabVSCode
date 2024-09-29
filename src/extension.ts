@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import qr from 'qrcode';
 import { WSClient } from './tools/wsConnect';
 import log4js from 'log4js';
+import { loadEnvFile } from 'process';
+import { get } from 'http';
 
 const logger = log4js.getLogger('WSClient');
 logger.level = 'debug';
@@ -96,6 +98,10 @@ export function activate(context: vscode.ExtensionContext) {
             logger.error('No config found');
             return;
         }
+        if (config.blacklist.includes(getFEx() || '')) {
+            logger.warn(`File ${getFEx()} is blacklisted`);
+            return;
+        }
         if (editor && event.document === editor.document) {
             const changes = event.contentChanges;
             
@@ -122,6 +128,10 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
         logger.debug(`Debug session started: ${session.name}`);
+        if (config.blacklist.includes(getFEx() || '')) {
+            logger.warn(`File ${getFEx()} is blacklisted`);
+            return;
+        }
         await wsClient.sendFireMessage("this", config.onDidStartDebugSession, 0.6);
     });
 
@@ -133,6 +143,10 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
         logger.debug(`Debug session terminated: ${session.name}`);
+        if (config.blacklist.includes(getFEx() || '')) {
+            logger.warn(`File ${getFEx()} is blacklisted`);
+            return;
+        }
         wsClient.sendFireMessage("this", config.onDidTerminateDebugSession, 0.6);
     });
 
@@ -144,6 +158,10 @@ export function activate(context: vscode.ExtensionContext) {
             const config = wsClient.getConfig();
             if (!config || config.onDidReceiveDebugSessionCustomEvent === undefined) {
                 logger.error('No config found');
+                return;
+            }
+            if (config.blacklist.includes(getFEx() || '')) {
+                logger.warn(`File ${getFEx()} is blacklisted`);
                 return;
             }
             wsClient.sendFireMessage("this", config.onDidReceiveDebugSessionCustomEvent, 0.6);
@@ -163,20 +181,49 @@ export function activate(context: vscode.ExtensionContext) {
             logger.error('No config found');
             return;
         }
+        if (config.blacklist.includes(getFEx() || '')) {
+            logger.warn(`File ${getFEx()} is blacklisted`);
+            return;
+        }
         wsClient.sendFireMessage("this", config.onDidChangeBreakpoints, 0.6);
     });
 
     vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
         const config = wsClient.getConfig();
-        if (!config || config.onDidSaveTextDocument === undefined) {
+        if (!config || config.onDidSaveTextDocument === undefined || config.blacklist === undefined) {
             logger.error('No config found');
             return;
         }
-        console.log(`File saved: ${document.fileName}`);
+        const fEx = document.fileName.split('.').pop();
+        if (config.blacklist.includes(fEx || '')) {
+            logger.warn(`File ${document.fileName} is blacklisted`);
+            return;
+        }
+        if (config.blacklist.includes(getFEx() || '')) {
+            logger.warn(`File ${getFEx()} is blacklisted`);
+            return;
+        }
         wsClient.sendFireMessage("this", config.onDidSaveTextDocument, 2);
     });
 
+
 }
+
+function getFEx() {
+    const activeEditor = vscode.window.activeTextEditor;
+    let fileExtension;
+    
+    if (activeEditor) {
+        const fileName = activeEditor.document.fileName;
+        fileExtension = fileName.split('.').pop();
+    } else {
+        logger.error('No active editor found');
+        fileExtension = '';
+    }
+    
+    return fileExtension;
+}
+
 
 function getWebviewContent(qrCodeSvg: string, url: string): string {
     return `
